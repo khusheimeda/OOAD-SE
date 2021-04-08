@@ -1,0 +1,22 @@
+Manage playlist and play songs:
+- Play song
+- Pause song
+- Toggle volume
+- Create playlist
+- View playlists
+- View songs in playlist
+- Add a song to playlist
+- Remove song from playlist
+
+Recommend similar songs:
+- Based on artist in recently played songs
+- Based on Language
+# ENTIRE TO DO
+
+List top songs on home screen like most played, liked and recent songs:
+- View recent songs
+- Update recent songs when a song is played so that new song is first and others are pushed back
+- User can add song to favourites = like song
+
+- Show favourites on home screen instead of along with playlists
+- Most played has to be recorded and displayed

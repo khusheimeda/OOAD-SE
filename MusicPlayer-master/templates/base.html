@@ -130,12 +130,16 @@
     background-color: #f5f5f5;
   }
 
+  .navbar-custom {
+    background-color: black;
+}
+
     </style>
     {% block header %} {% endblock header %}
     
 </head>
 <body class="bg-light">
-    <nav class="navbar navbar-expand-md navbar-primary bg-dark">
+    <nav class="navbar navbar-expand-md navbar-primary navbar-custom">
         <div class="container">
             <h1><a href="{% url 'index' %}" class="navbar-brand">
             <strong style="color:white">WYNK</strong></a></h1>

@@ -19,6 +19,13 @@
 <br>
 <center>
   <h3>Playlist-{{playlist_name}}</h3>
+  <form method="post">
+    {% csrf_token %}
+
+    <input type="input" placeholder="Rename playlist" name="New_name">
+    <input class="btn btn-primary" type="submit" value="Click to rename" name="Rename">
+    <input class="btn btn-primary" type="submit" value="Delete" name="Delete">
+  </form>
 </center>
 <table class="table table-hover table-primary">
   <thead>

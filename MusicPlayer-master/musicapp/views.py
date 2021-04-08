@@ -1,3 +1,4 @@
+from django.forms import forms
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import *
 from django.db.models import Q
@@ -24,12 +25,19 @@ def index(request):
     #Last played song
     if not request.user.is_anonymous:
         last_played_list = list(Recent.objects.filter(user=request.user).values('song_id').order_by('-id'))
+        liked_songs = list(Song.objects.filter(favourite__user=request.user, favourite__is_fav=True).distinct())
+        print('liked', liked_songs)
         if last_played_list:
             last_played_id = last_played_list[0]['song_id']
             last_played_song = Song.objects.get(id=last_played_id)
         else:
             first_time = True
             last_played_song = Song.objects.get(id=7)
+
+        # if liked_songs:
+        #
+        #     liked_songs_id = liked_songs[0]['song_id']
+        #     liked_songs_song = Song.objects.get(id=liked_songs_id)
 
     else:
         first_time = True
@@ -293,10 +301,27 @@ def playlist_songs(request, playlist_name):
     songs = Song.objects.filter(playlist__playlist_name=playlist_name, playlist__user=request.user).distinct()
 
     if request.method == "POST":
-        song_id = list(request.POST.keys())[1]
-        playlist_song = Playlist.objects.filter(playlist_name=playlist_name, song__id=song_id, user=request.user)
-        playlist_song.delete()
-        messages.success(request, "Song removed from playlist!")
+        print('clicked', list(request.POST.keys()), request.POST.get('New_name'))
+        ret_val = list(request.POST.keys())[1]
+        try:
+            ret_val = int(ret_val)
+            song_id = ret_val
+            playlist_song = Playlist.objects.filter(playlist_name=playlist_name, song__id=song_id, user=request.user)
+            playlist_song.delete()
+            messages.success(request, "Song removed from playlist!")
+        except:
+            selected_playlist = Playlist.objects.filter(playlist_name=playlist_name, user=request.user)
+            if list(request.POST.keys())[-1] == 'Delete':
+                selected_playlist.delete()
+                messages.success(request, "Playlist deleted")
+            elif list(request.POST.keys())[-1] == 'Rename':
+                rename_playlist = request.POST.get('New_name')
+                if rename_playlist =='':
+                    messages.success(request, 'Not renamed')
+                    context = {'playlist_name': playlist_name, 'songs': songs}
+                    return render(request, 'musicapp/playlist_songs.html', context=context)
+                Playlist.objects.filter(playlist_name=playlist_name, user=request.user).update(playlist_name = rename_playlist)
+                messages.success(request, "Renamed playlist to " + rename_playlist)
 
     context = {'playlist_name': playlist_name, 'songs': songs}
 
@@ -314,3 +339,49 @@ def favourite(request):
         messages.success(request, "Removed from favourite!")
     context = {'songs': songs}
     return render(request, 'musicapp/favourite.html', context=context)
+
+
+def liked_songs(request):
+    # songs = Song.objects.filter(favourite__user=request.user, favourite__is_fav=True).distinct()
+    # print(f'songs: {songs}')
+    # context = {'songs': songs}
+    # return render(request, 'musicapp/liked.html', context=context)
+
+    # liked_songs = Song.objects.filter(language='Hindi')
+
+    # Last played song
+    last_played_list = list(Recent.objects.values('song_id').order_by('-id'))
+    if last_played_list:
+        last_played_id = last_played_list[0]['song_id']
+        last_played_song = Song.objects.get(id=last_played_id)
+    else:
+        last_played_song = Song.objects.get(id=7)
+
+    # query = request.GET.get('q')
+    #
+    # if query:
+    #     liked_songs = Song.objects.filter(Q(name__icontains=query)).distinct()
+    #     context = {'hindi_songs': hindi_songs}
+    #     return render(request, 'musicapp/hindi_songs.html', context)
+    #
+    # context = {'hindi_songs': hindi_songs, 'last_played': last_played_song}
+    # return render(request, 'musicapp/hindi_songs.html', context=context)
+
+    songs = Song.objects.filter(favourite__user=request.user, favourite__is_fav=True).distinct()
+    if songs and not request.user.is_anonymous:
+        songs_id = [each['song_id'] for each in songs]
+        songs_songs = list()
+        for id in songs_id:
+            songs_songs.append(songs.get(id=id))
+    else:
+        songs = None
+
+    if len(request.GET) > 0:
+        search_query = request.GET.get('q')
+        filtered_songs = songs.filter(Q(name__icontains=search_query)).distinct()
+        context = {'liked_songs': filtered_songs, 'last_played': last_played_song, 'query_search': True}
+        return render(request, 'musicapp/liked_songs.html', context)
+
+    context = {'recent_songs': songs, 'last_played': last_played_song, 'query_search': False}
+    return render(request, 'musicapp/liked_songs.html', context=context)
+

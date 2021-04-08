@@ -7,6 +7,8 @@ Manage playlist and play songs:
 - View songs in playlist
 - Add a song to playlist
 - Remove song from playlist
+- Delete playlist
+- Rename playlist
 
 Recommend similar songs:
 - Based on artist in recently played songs

@@ -58,7 +58,7 @@
 
 
 <!-- Liked Songs -->
-{% if recent_songs %}
+{% if list_liked_songs %}
 {% if not query_search %}
   <header class="section-heading">
     <h5 class="section-title">LIKED SONGS</h5>
@@ -67,7 +67,7 @@
 {% endif %}
 <!-- Favourite Song list -->
 <div class="row" style="margin-right: 65px;margin-left:-15px">
-  {% for song in recent_songs %}
+  {% for song in list_liked_songs %}
       <div class="col-md-2">
           <div class="hovereffect">
             <img src="{{ song.song_img.url}}" class="img-responsive" height="135" width="135" style="border-radius: 8px 8px 8px 8px;">

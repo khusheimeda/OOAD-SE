@@ -10,6 +10,7 @@ from django.http import HttpResponseRedirect
 # Create your views here.
 def index(request):
     most_played = []
+    recomm=set()
     #Display recent songs
     if not request.user.is_anonymous :
         recent = list(Recent.objects.filter(user=request.user).values('song_id').order_by('-id'))
@@ -138,7 +139,7 @@ def index(request):
         'english_songs':indexpage_english_songs,
         'last_played':last_played_song,
         'first_time': first_time,
-        'recomm_songs':list(recomm)[:5],
+        'recomm_songs':list(recomm)[:min(len(recomm),5)],
         'query_search':False,
     }
     return render(request, 'musicapp/index.html', context=context)

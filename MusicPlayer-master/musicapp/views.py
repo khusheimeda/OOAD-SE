@@ -27,7 +27,7 @@ def index(request):
 
                 m1=Maxplayed.objects.create(user=request.user,song=songs,no_played=1)
                 max_played.append(m1)
-                print("in 0")
+                #print("in 0")
             
             else:
                 m2=Maxplayed.objects.filter(user=request.user)
@@ -35,14 +35,14 @@ def index(request):
                 
                 for i in m2:
                     if i.song_id==m:
-                        print("in if",i.song_id,m)
+                        #print("in if",i.song_id,m)
                         temp=i.no_played+1
                         Maxplayed.objects.filter(song_id=m).update(no_played=temp)
                         max_played.append(i)
                         flag=1
                         break
                 if flag==0:
-                    print("in else",m)
+                    #print("in else",m)
                     m1=Maxplayed.objects.create(user=request.user,song=songs,no_played=1)
                     m1.save()
                     max_played.append(m1)
@@ -59,7 +59,8 @@ def index(request):
         recent = None
         recent_songs = None
         max_played = None
-
+        
+    
     # Display liked songs
     if not request.user.is_anonymous:
         liked = list(Favourite.objects.filter(user=request.user, is_fav=True).distinct().values('song_id'))
@@ -78,9 +79,24 @@ def index(request):
     #Last played song
     if not request.user.is_anonymous:
         last_played_list = list(Recent.objects.filter(user=request.user).values('song_id').order_by('-id'))
+        print(last_played_list)
         if last_played_list:
             last_played_id = last_played_list[0]['song_id']
             last_played_song = Song.objects.get(id=last_played_id)
+            #recommendation
+            artist=(last_played_song.singer).split(",")
+            artist=[i.strip() for i in artist]
+            recomm=set()
+            a_songs=Song.objects.all()
+            for i in a_songs:
+                for j in artist:
+                    if j in i.singer and i.name!=last_played_song.name:
+                        recomm.add(i)
+                    if i.album==last_played_song.album and i.name!=last_played_song.name:
+                        recomm.add(i)
+
+            #print(recomm)
+            
         else:
             first_time = True
             last_played_song = Song.objects.get(id=7)
@@ -122,6 +138,7 @@ def index(request):
         'english_songs':indexpage_english_songs,
         'last_played':last_played_song,
         'first_time': first_time,
+        'recomm_songs':list(recomm)[:5],
         'query_search':False,
     }
     return render(request, 'musicapp/index.html', context=context)

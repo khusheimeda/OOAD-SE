@@ -16,9 +16,9 @@ urlpatterns = [
     path('play/<int:song_id>/', views.play_song, name='play_song'),
     path('play_song/<int:song_id>/', views.play_song_index, name='play_song_index'),
     path('play_recent_song/<int:song_id>/', views.play_recent_song, name='play_recent_song'),
+    path('max_played_songs/<int:song_id>/', views.play_song_max, name='play_song_max'),
+    path('liked_songs/<int:song_id>/', views.play_liked_song, name='play_liked_song'),
     path('liked_songs/', views.liked_songs, name='liked_songs'),
     path('max_played_songs/', views.max_played_songs, name='max_played_songs'),
-
-    
 
 ]

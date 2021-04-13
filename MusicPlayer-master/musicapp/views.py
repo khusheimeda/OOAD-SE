@@ -217,12 +217,35 @@ def play_song_index(request, song_id):
 def play_recent_song(request, song_id):
     songs = Song.objects.filter(id=song_id).first()
     # Add data to recent database
+    # print("reuest:", request)
     if list(Recent.objects.filter(song=songs,user=request.user).values()):
         data = Recent.objects.filter(song=songs,user=request.user)
         data.delete()
     data = Recent(song=songs,user=request.user)
     data.save()
     return redirect('recent')
+
+@login_required(login_url='login')
+def play_song_max(request, song_id):
+    songs = Song.objects.filter(id=song_id).first()
+    # Add data to recent database
+    if list(Recent.objects.filter(song=songs,user=request.user).values()):
+        data = Recent.objects.filter(song=songs,user=request.user)
+        data.delete()
+    data = Recent(song=songs,user=request.user)
+    data.save()
+    return redirect('max_played_songs')
+
+@login_required(login_url='login')
+def play_liked_song(request, song_id):
+    songs = Song.objects.filter(id=song_id).first()
+    # Add data to recent database
+    if list(Recent.objects.filter(song=songs,user=request.user).values()):
+        data = Recent.objects.filter(song=songs,user=request.user)
+        data.delete()
+    data = Recent(song=songs,user=request.user)
+    data.save()
+    return redirect('liked_songs')
 
 
 def all_songs(request):
@@ -419,6 +442,10 @@ def liked_songs(request):
     # print("negative oneee")
     songs = list(Favourite.objects.filter(user=request.user, is_fav=True).distinct())
 
+    last_played_list = list(Recent.objects.filter(user=request.user).values('song_id').order_by('-id'))
+    last_played_id = last_played_list[0]['song_id']
+    last_played_song = Song.objects.get(id=last_played_id)
+
     liked_songs_ids = list(Favourite.objects.filter(user=request.user).values('id').order_by('-id'))
 
     if liked_songs_ids:
@@ -428,13 +455,18 @@ def liked_songs(request):
             songg = Song.objects.filter(id=song_id).first()
             liked_songs.append(songg)
 
-    context = {'liked_songs': liked_songs}
+    context = {'liked_songs': liked_songs, 'last_played': last_played_song}
     return render(request, 'musicapp/liked_songs.html', context=context)
 
 def max_played_songs(request):
 
     #Display recent songs
     
+    last_played_list = list(Recent.objects.filter(user=request.user).values('song_id').order_by('-id'))
+    last_played_id = last_played_list[0]['song_id']
+    last_played_song = Song.objects.get(id=last_played_id)
+
+
     if not request.user.is_anonymous :
         recent = list(Recent.objects.filter(user=request.user).values('song_id').order_by('-id'))
         recent_id = [each['song_id'] for each in recent][:5]
@@ -486,6 +518,7 @@ def max_played_songs(request):
     context = {
         
         'max_played':most_played,
+        'last_played': last_played_song,
         
     }
     return render(request, 'musicapp/max_played_songs.html', context=context)

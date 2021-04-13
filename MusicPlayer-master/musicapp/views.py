@@ -93,8 +93,8 @@ def index(request):
                 for j in artist:
                     if j in i.singer and i.name!=last_played_song.name:
                         recomm.add(i)
-                    if i.album==last_played_song.album and i.name!=last_played_song.name:
-                        recomm.add(i)
+                if i.album==last_played_song.album and i.name!=last_played_song.name:
+                    recomm.add(i)
 
             #print(recomm)
             

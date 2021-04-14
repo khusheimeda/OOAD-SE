@@ -20,5 +20,8 @@ urlpatterns = [
     path('liked_songs/<int:song_id>/', views.play_liked_song, name='play_liked_song'),
     path('liked_songs/', views.liked_songs, name='liked_songs'),
     path('max_played_songs/', views.max_played_songs, name='max_played_songs'),
+    path('recent_recommended/<int:song_id>/', views.play_recentcomm_song, name='play_recentcomm_song'),
+    path('recent_recommended/', views.recent_recommended, name='recent_recommended'),
+
 
 ]

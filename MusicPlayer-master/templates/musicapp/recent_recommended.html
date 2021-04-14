@@ -1,45 +1,47 @@
 {% extends 'base.html' %}
 {% load socialaccount %}
-{% block title %} Liked Songs {% endblock title %}
+{% block title %}Recent Activity {% endblock title %}
 
 {% block body %}
-
-<br>
 <br>
 <div class="container">
-  <div class="col-md-12">
-    <form class="form-horizontal" role="search" method="get" action=''>
-      <div class="form-group">
+
+  <form class="form-horizontal" role="search" method="get" action=''>
+    <div class="form-group">
+      <div class="input-group">
         <div class="input-group">
-          <input type="text" class="form-control input-lg " name="q" value="{{ request.GET.q }}"
-            placeholder="Search Songs " />
-          <span class='input-group-btn'>
-            <button type="button" class="btn btn-primary" type="submit">Search</button>
+          <input type="text" class="form-control input-lg " name="q" style="border-radius: 5px;"
+          value="{{ request.GET.q }}" placeholder= "Search Songs "/>               
+          <span class='input-group-btn mx-2'>
+            <button type="submit" style="border-radius: 5px;" class="btn btn-primary">Search</button>
           </span>
         </div>
       </div>
-    </form>
-  </div>
-</div>
-
-<!-- Liked Songs -->
-<div class="container" style="margin-bottom: 20px;">
+    </div>
+  </form>
+  <!-- <hr> -->
+  {% if not query_search %}
   <header class="section-heading">
-    <h5 class="section-title">LIKED SONGS</h5>
+    <h5 class="section-title">BASED ON YOUR RECENTLY PLAYED</h5>
   </header>
   <hr>
+  {% else %}
+  <header class="section-heading">
+    <h5 class="section-title">SEARCH RESULTS</h5>
+  </header>
+  <hr>
+  {% endif %}
+  
   <!-- Song list -->
   <div class="row" style="margin-right: 65px;margin-left:-15px;">
-
-
-    {% if liked_songs %}
-    {% for song in liked_songs %}
+    {% if recent_recomm %}
+    {% for song in recent_recomm %}
     <div class="col-sm-2 col-md-2" style="padding-bottom: 15px;">
       <div class="hovereffect">
-        <img src="{{ song.song_img.url }}" class="img-responsive" height="135" width="135"
+        <img src="{{ song.song_img.url}}" class="img-responsive" height="135" width="135"
           style="border-radius: 8px 8px 8px 8px;">
         <div class="overlay">
-          <a class="btn btn-outline-light mt-5 mx-1" onclick="return change_song();" href="{% url 'play_liked_song' song.id %}" ><i class="fa fa-play" 
+          <a class="btn btn-outline-light mt-5 mx-1" href="{% url 'play_recentcomm_song' song.id %}"><i class="fa fa-play"
               aria-hidden="true"></i></a>
           <a class="btn btn-outline-light mt-5 mx-1" href="{% url 'detail' song.id %}"><i class="fa fa-info-circle"
               aria-hidden="true"></i></a>
@@ -48,11 +50,11 @@
     </div>
     {% endfor %}
     {% endif %}
-
   </div>
 </div>
 <br>
-
+<br>
+<br>
 <footer class="footer">
   <div class="player" style="padding-left: 10px;padding-top:10px;background-color: black;">
     <div class="left"><img src="{{last_played.song_img.url}}" height="90" width="90"
@@ -71,9 +73,7 @@
   </div>
 </footer>
 
-<script>
-
-
+<!-- <script>
 
 function setCookie(c_name,value,exdays)
 {
@@ -81,11 +81,8 @@ function setCookie(c_name,value,exdays)
     exdate.setDate(exdate.getDate() + exdays);
     var c_value=escape(value) + ((exdays==null) ? "" : "; expires="+exdate.toUTCString());
     // document.cookie=c_name + "=" + c_value;
-    console.log(c_name, c_value)
-    document.cookie=c_name + "=" + c_value + ";path=/" + ";SameSite=Lax";
+    document.cookie=c_name + "=" + c_value + ";path=/";
 }
-
-
 
 function getCookie(c_name)
 {
@@ -105,13 +102,6 @@ function getCookie(c_name)
 var song = document.getElementsByTagName('audio')[0];
 var played = false;
 var tillPlayed = getCookie('timePlayed');
-
-function change_song() {
-  console.log("Clicked")
-  setCookie('timePlayed', 0);
-  return true;
-}
-
 function update()
 {
     if(!played){
@@ -127,14 +117,10 @@ function update()
     }
 
     else {
-
     setCookie('timePlayed', song.currentTime);
     }
 }
-update();
 setInterval(update,1000);
-
-
-</script>
+</script> -->
 
 {% endblock body %}

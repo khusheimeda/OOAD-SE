@@ -284,6 +284,28 @@ def play_liked_song(request, song_id):
     data.save()
     return redirect('liked_songs')
 
+@login_required(login_url='login')
+def play_english_song(request, song_id):
+    songs = Song.objects.filter(id=song_id).first()
+    # Add data to recent database
+    if list(Recent.objects.filter(song=songs,user=request.user).values()):
+        data = Recent.objects.filter(song=songs,user=request.user)
+        data.delete()
+    data = Recent(song=songs,user=request.user)
+    data.save()
+    return redirect('english_songs')
+
+@login_required(login_url='login')
+def play_hindi_song(request, song_id):
+    songs = Song.objects.filter(id=song_id).first()
+    # Add data to recent database
+    if list(Recent.objects.filter(song=songs,user=request.user).values()):
+        data = Recent.objects.filter(song=songs,user=request.user)
+        data.delete()
+    data = Recent(song=songs,user=request.user)
+    data.save()
+    return redirect('hindi_songs')
+
 
 def all_songs(request):
     songs = Song.objects.all()

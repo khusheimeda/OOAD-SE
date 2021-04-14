@@ -39,7 +39,7 @@
         <img src="{{ song.song_img.url }}" class="img-responsive" height="135" width="135"
           style="border-radius: 8px 8px 8px 8px;">
         <div class="overlay">
-          <a class="btn btn-outline-light mt-5 mx-1" href="{% url 'play_liked_song' song.id %}"><i class="fa fa-play"
+          <a class="btn btn-outline-light mt-5 mx-1" onclick="return change_song();" href="{% url 'play_liked_song' song.id %}" ><i class="fa fa-play" 
               aria-hidden="true"></i></a>
           <a class="btn btn-outline-light mt-5 mx-1" href="{% url 'detail' song.id %}"><i class="fa fa-info-circle"
               aria-hidden="true"></i></a>
@@ -73,14 +73,19 @@
 
 <script>
 
+
+
 function setCookie(c_name,value,exdays)
 {
     var exdate=new Date();
     exdate.setDate(exdate.getDate() + exdays);
     var c_value=escape(value) + ((exdays==null) ? "" : "; expires="+exdate.toUTCString());
     // document.cookie=c_name + "=" + c_value;
-    document.cookie=c_name + "=" + c_value + ";path=/";
+    console.log(c_name, c_value)
+    document.cookie=c_name + "=" + c_value + ";path=/" + ";SameSite=Lax";
 }
+
+
 
 function getCookie(c_name)
 {
@@ -100,6 +105,13 @@ function getCookie(c_name)
 var song = document.getElementsByTagName('audio')[0];
 var played = false;
 var tillPlayed = getCookie('timePlayed');
+
+function change_song() {
+  console.log("Clicked")
+  setCookie('timePlayed', 0);
+  return true;
+}
+
 function update()
 {
     if(!played){
@@ -115,10 +127,14 @@ function update()
     }
 
     else {
+
     setCookie('timePlayed', song.currentTime);
     }
 }
+update();
 setInterval(update,1000);
+
+
 </script>
 
 {% endblock body %}

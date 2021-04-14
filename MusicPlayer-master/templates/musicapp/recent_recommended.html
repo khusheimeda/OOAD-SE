@@ -65,7 +65,7 @@
         <a class="artist" style="margin-left: 15px;color:white">{{last_played.album}}</a>
       </div>
       <div class="bottom">
-        <audio preload='auto' controls="" autoplay name="media"
+        <audio preload='auto' style="width:100%;margin-left:1em" controls="" autoplay name="media"
           style="margin-left: 20px;margin-bottom: 10px;width: 1230px;height:30px">
           <source src="{{last_played.song_file.url}}" type="audio/mpeg"></audio>
       </div>
@@ -73,7 +73,7 @@
   </div>
 </footer>
 
-<!-- <script>
+<script>
 
 function setCookie(c_name,value,exdays)
 {
@@ -121,6 +121,6 @@ function update()
     }
 }
 setInterval(update,1000);
-</script> -->
+</script> 
 
 {% endblock body %}

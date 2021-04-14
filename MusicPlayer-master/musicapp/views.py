@@ -45,7 +45,7 @@ def index(request):
                         recent_recomm.add(i)
                 if i.album in albumss :#and i.name not in songsss:
                     recent_recomm.add(i)
-        print("based on your recent activity",recent_recomm)
+        #print("based on your recent activity",recent_recomm)
 
 
         # display most played songs
@@ -75,10 +75,10 @@ def index(request):
                     m1=Maxplayed.objects.create(user=request.user,song=songs,no_played=1)
                     m1.save()
                     max_played.append(m1)
-            print(max_played)
+            #print(max_played)
             m2=list(Maxplayed.objects.filter(user=request.user))
             m2=sorted(m2,key=lambda x:x.no_played,reverse=True)
-            temp_list=[print(i.no_played) for i in m2]
+            #temp_list=[print(i.no_played) for i in m2]
             for i in m2:
                 
                 songg=i.song
@@ -99,7 +99,7 @@ def index(request):
     # Display liked songs
     if not request.user.is_anonymous:
         liked = list(Favourite.objects.filter(user=request.user, is_fav=True).distinct().values('song_id'))
-        print('liked', liked)
+        #print('liked', liked)
         liked_id = [each['song_id'] for each in liked][:5]
         liked_songs_unsorted = Song.objects.filter(id__in=liked_id,favourite__user=request.user)
         list_liked_songs = list()
@@ -114,7 +114,7 @@ def index(request):
     #Last played song
     if not request.user.is_anonymous:
         last_played_list = list(Recent.objects.filter(user=request.user).values('song_id').order_by('-id'))
-        print(last_played_list)
+        #print(last_played_list)
         if last_played_list:
             last_played_id = last_played_list[0]['song_id']
             last_played_song = Song.objects.get(id=last_played_id)
@@ -418,18 +418,18 @@ def detail(request, song_id):
         elif 'add-fav' in request.POST:
             is_fav = True
             song_img = Song.objects.filter(id=song_id)
-            print(song_img.first().name)
+            #print(song_img.first().name)
             query = Favourite(user=request.user, song=songs, is_fav=is_fav, id=song_id)
-            print(f'query: {query}')
+            #print(f'query: {query}')
             query.save()
             messages.success(request, "Added to favorite!")
             return redirect('detail', song_id=song_id)
         elif 'rm-fav' in request.POST:
             is_fav = True
             query = Favourite.objects.filter(user=request.user, song=songs, is_fav=is_fav)
-            print(f'user: {request.user}')
-            print(f'song: {songs.id} - {songs}')
-            print(f'query: {query}')
+            # print(f'user: {request.user}')
+            # print(f'song: {songs.id} - {songs}')
+            # print(f'query: {query}')
             query.delete()
             messages.success(request, "Removed from favorite!")
             return redirect('detail', song_id=song_id)
@@ -452,7 +452,7 @@ def playlist_songs(request, playlist_name):
     # print("playlist nameee: ", playlist_name, request)
 
     if request.method == "POST":
-        print('clicked', list(request.POST.keys()), request.POST.get('New_name'))
+        #print('clicked', list(request.POST.keys()), request.POST.get('New_name'))
         ret_val = list(request.POST.keys())[1]
         try:
             ret_val = int(ret_val)
@@ -486,7 +486,7 @@ def playlist_songs(request, playlist_name):
 
 def favourite(request):
     songs = Song.objects.filter(favourite__user=request.user, favourite__is_fav=True).distinct()
-    print(f'songs: {songs}')
+    #print(f'songs: {songs}')
     
     if request.method == "POST":
         song_id = list(request.POST.keys())[1]
@@ -514,6 +514,16 @@ def liked_songs(request):
             songg = Song.objects.filter(id=song_id).first()
             liked_songs.append(songg)
 
+    
+    liked_songs_unsorted = Song.objects.filter(id__in=liked_songs_ids_ids,recent__user=request.user)
+    
+    if len(request.GET) > 0:
+        search_query = request.GET.get('q')
+        filtered_songs = liked_songs_unsorted.filter(Q(name__icontains=search_query)).distinct()
+        context = {'liked_songs': filtered_songs,'last_played':last_played_song,'query_search':True}
+        return render(request, 'musicapp/liked_songs.html', context)
+
+    
     context = {'liked_songs': liked_songs, 'last_played': last_played_song}
     return render(request, 'musicapp/liked_songs.html', context=context)
 
@@ -524,6 +534,8 @@ def max_played_songs(request):
     last_played_list = list(Recent.objects.filter(user=request.user).values('song_id').order_by('-id'))
     last_played_id = last_played_list[0]['song_id']
     last_played_song = Song.objects.get(id=last_played_id)
+
+
 
 
     if not request.user.is_anonymous :
@@ -553,7 +565,7 @@ def max_played_songs(request):
                 
                 for i in m2:
                     if i.song_id==m:
-                        print("in if",i.song_id,m)
+                        #print("in if",i.song_id,m)
                         temp=i.no_played+1
                         Maxplayed.objects.filter(song_id=m).update(no_played=temp)
                         max_played.append(i)
@@ -573,12 +585,23 @@ def max_played_songs(request):
                 
                 songg=i.song
                 most_played.append(songg)
+        most_played_id=[i.id for i in most_played]
+        most_played_ids = Song.objects.filter(id__in=most_played_id,recent__user=request.user)
+        #print("most_played_ids",most_played_ids)
+    if len(request.GET) > 0:
+        search_query = request.GET.get('q')
+        filtered_songs = most_played_ids.filter(Q(name__icontains=search_query)).distinct()
+        #print("filtered songs",filtered_songs)
+        context = {'max_played': filtered_songs,'last_played':last_played_song,'query_search':True}
+        return render(request, 'musicapp/max_played_songs.html', context)
+
             
     context = {
         
         'max_played':most_played,
         'last_played': last_played_song,
-        
+
+        'query_search':False
     }
     return render(request, 'musicapp/max_played_songs.html', context=context)
 
@@ -632,7 +655,7 @@ def recent_recommended(request):
                         recent_recomm.add(i)
                 if i.album in albumss:# and i.name not in songsss:
                     recent_recomm.add(i)
-        print("based on your recent activity",recent_recomm)
+        #print("based on your recent activity",recent_recomm)
         recent_recomm_id=[i.id for i in recent_recomm]
         recent_recomm_unsorted = Song.objects.filter(id__in=recent_recomm_id,recent__user=request.user)
     

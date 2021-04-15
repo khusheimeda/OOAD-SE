@@ -178,7 +178,7 @@ a {
         <div class="container">
             <h1><a href="{% url 'index' %}" class="navbar-brand">
             <strong style="color:red">WYNK</strong></a></h1>
-            <div class="collapse navbar-collapse">
+            <div class="collapse navbar-collapse" style="font-family: Helvetica">
                 <a href="{% url 'index' %}" class="btn btn-outline-light mt-2 mx-1">HOME</a>
                 <a href="{% url 'all_songs' %}" class="btn btn-outline-light mt-2 mx-1">ALL SONGS</a>
                 {% if request.user.is_active %}

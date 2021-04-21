@@ -18,7 +18,7 @@
 <br>
 <br>
 <center>
-  <h3>Playlist-{{playlist_name}}</h3>
+  <h3>{{playlist_name}}</h3>
   <form method="post">
     {% csrf_token %}
 
@@ -27,7 +27,7 @@
     <input class="btn btn-primary" type="submit" value="Delete" name="Delete">
   </form>
 </center>
-<table class="table table-hover table-primary">
+<table class="table table-hover table-dark">
   <thead>
     <tr>
       <th scope="col">#</th>
@@ -44,7 +44,7 @@
     {% for song in songs %}
     <tr>
       <th scope="row">{{forloop.counter}}</th>
-      <td><a href="{% url 'detail' song.id %}">{{song.name}}</a></td>
+      <td><a href="{% url 'detail' song.id %}"><b>{{song.name}}</b></a></td>
       <td>{{song.album}}</td>
       <td>{{song.singer}}</td>
       <td>

@@ -13,11 +13,17 @@ urlpatterns = [
     path('recent/', views.recent, name='recent'),
     path('hindi_songs/', views.hindi_songs, name='hindi_songs'),
     path('english_songs/', views.english_songs, name='english_songs'),
+    path('english_songs/<int:song_id>/', views.play_english_song, name='play_english_song'),
+    path('hindi_songs/<int:song_id>/', views.play_hindi_song, name='play_hindi_song'),
     path('play/<int:song_id>/', views.play_song, name='play_song'),
     path('play_song/<int:song_id>/', views.play_song_index, name='play_song_index'),
     path('play_recent_song/<int:song_id>/', views.play_recent_song, name='play_recent_song'),
+    path('max_played_songs/<int:song_id>/', views.play_song_max, name='play_song_max'),
+    path('liked_songs/<int:song_id>/', views.play_liked_song, name='play_liked_song'),
     path('liked_songs/', views.liked_songs, name='liked_songs'),
+    path('max_played_songs/', views.max_played_songs, name='max_played_songs'),
+    path('recent_recommended/<int:song_id>/', views.play_recentcomm_song, name='play_recentcomm_song'),
+    path('recent_recommended/', views.recent_recommended, name='recent_recommended'),
 
-    
 
 ]

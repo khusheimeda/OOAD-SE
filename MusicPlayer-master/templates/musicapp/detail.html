@@ -25,7 +25,7 @@
 {% endif %}
 <br>
 <div class="container">
-    <div class="card">
+    <div class="card" style="background-color:black">
         <div class="container-fliud">
             <div class="wrapper row">
                 <div class="preview col-md-5">
@@ -54,7 +54,7 @@
                         <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
                             aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog" role="document">
-                                <div class="modal-content">
+                                <div class="modal-content" style="background-color: black">
                                     <div class="modal-header">
                                         <h5 class="modal-title" id="exampleModalLabel">New Playlist</h5>
                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -131,7 +131,7 @@
                 <a class="artist" style="margin-left: 15px;color:white">{{last_played.album}}</a>
             </div>
             <div class="bottom">
-                <audio controls="" _autoplay="" name="media"
+                <audio controls="" style="width:100%;margin-left:1em" _autoplay="" name="media"
                     style="margin-left: 20px;margin-bottom: 10px;width: 1245px;height:30px">
                     <source src="{{last_played.song_file.url}}" type="audio/mpeg"></audio>
             </div>
